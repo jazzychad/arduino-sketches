@@ -1,3 +1,9 @@
+void showNumberWithDuration(int number, long duration);
+void displayNumber(int number);
+void displayLeftDigit(int digit);
+void displayRightDigit(int digit);
+void lightUpDigit(int DisplayNumber);
+
 void setup() {
   // put your setup code here, to run once:
   // Set 7-segement outputs  

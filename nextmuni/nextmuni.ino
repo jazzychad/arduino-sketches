@@ -1,14 +1,16 @@
+void readSerial();
+
 void displayNumber(int number);
-void showNumberWithDuration(int number, long duration);
+void showNumberWithDuration(int number, unsigned long duration);
 void displayLeftDigit(int digit);
 void displayRightDigit(int digit);
 void lightUpDigit(int DisplayNumber);
 
+int minutes = 99;
+char buffer[7];
+int buffer_idx = 0;
+
 void setup() {
-  //Serial.begin(9600);
-  //Serial.println("hello");
-  // put your setup code here, to run once:
-  // Set 7-segement outputs  
   pinMode(2, OUTPUT); 
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
@@ -18,20 +20,49 @@ void setup() {
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly: 
-  int potVal = analogRead(2);
-  long normalLong = potVal * 100L / 1024L;
-  long normalVal = normalLong + 0;
-  //Serial.print("potVal = ");
-  //Serial.println(potVal);
-  //Serial.print("normalVal = ");
-  //Serial.println(normalVal);
-  displayNumber(normalVal);
-
+  displayNumber(minutes);
+  readSerial();
 }
+
+int atoi(char buffer[]) {
+  int idx = 0;
+  int ret = 0;
+  while (buffer[idx] != 0) {
+    ret = ret * 10;
+    char c = buffer[idx];
+    ret = ret + (c - '0');
+    idx++;
+  }
+  return ret;
+}
+
+void readSerial() {
+  if (Serial.available() > 0) { // check if there is data waiting
+    int inByte = Serial.read(); // read one byte
+    if (inByte != 10) { // if byte is not newline
+      buffer[buffer_idx] = char(inByte); // just add it to the buffer
+      buffer_idx++;
+    } else {
+      // turn the buffer from string into an integer number
+      buffer[buffer_idx] = 0;
+      int num = atoi(buffer);
+      minutes = num;
+
+      // clean the buffer for the next read cycle
+      buffer_idx = 0;
+
+    }
+
+  }
+}
+
+///////
+///////
 
 void showNumberWithDuration(int number, unsigned long duration) {
  long start = millis();

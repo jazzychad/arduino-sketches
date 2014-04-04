@@ -1,14 +1,10 @@
 void displayNumber(int number);
-void showNumberWithDuration(int number, long duration);
+void showNumberWithDuration(int number, unsigned long duration);
 void displayLeftDigit(int digit);
 void displayRightDigit(int digit);
 void lightUpDigit(int DisplayNumber);
 
 void setup() {
-  //Serial.begin(9600);
-  //Serial.println("hello");
-  // put your setup code here, to run once:
-  // Set 7-segement outputs  
   pinMode(2, OUTPUT); 
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
@@ -18,20 +14,20 @@ void setup() {
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
+
+  int seed = micros() + analogRead(0);
+  randomSeed(seed);
+  Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly: 
-  int potVal = analogRead(2);
-  long normalLong = potVal * 100L / 1024L;
-  long normalVal = normalLong + 0;
-  //Serial.print("potVal = ");
-  //Serial.println(potVal);
-  //Serial.print("normalVal = ");
-  //Serial.println(normalVal);
-  displayNumber(normalVal);
-
+  int rand = random(100);
+  Serial.println(rand);
+  showNumberWithDuration(rand, (unsigned long)1000);
 }
+
+///////
+///////
 
 void showNumberWithDuration(int number, unsigned long duration) {
  long start = millis();
