@@ -1,3 +1,5 @@
+// using 2 8-bit shift registers in series to power 2 7-segment displays
+
 #include <Tone.h>
 #include <Keypad.h>
 
@@ -75,47 +77,6 @@ void loop()
 
 }
 
-int atoi(char buffer[]) {
-  int idx = 0;
-  int ret = 0;
-  while (buffer[idx] != 0) {
-    ret = ret * 10;
-    char c = buffer[idx];
-    ret = ret + (c - '0');
-    idx++;
-  }
-  return ret;
-}
-
-int minutes = 99;
-const int BUFFER_SIZE = 16;
-char buffer[BUFFER_SIZE];
-int buffer_idx = 0;
-
-void readSerialForMinutes() {
-  if (Serial.available() > 0) { // check if there is data waiting
-    int inByte = Serial.read(); // read one byte
-    if (inByte != 10) { // if byte is not newline
-      buffer[buffer_idx] = char(inByte); // just add it to the buffer
-      buffer_idx++;
-    } else {
-      // turn the buffer from string into an integer number
-      buffer[buffer_idx] = 0;
-      int num = atoi(buffer);
-      minutes = num;
-
-      // clean the buffer for the next read cycle
-      buffer_idx = 0;
-
-    }
-
-  }
-}
-
-
-///////////////
-/// DISPLAY ///
-///////////////
 
 void updateDisplayValue(int num)
 {
@@ -148,15 +109,15 @@ void keypadEvent(KeypadEvent key)
 
   switch (keypad.getState()){
   case PRESSED:
-    //freq1.play(DTMF_freq1[num]);
-    //freq2.play(DTMF_freq2[num]);
-    //displayNumber(num);
+    freq1.play(DTMF_freq1[num]);
+    freq2.play(DTMF_freq2[num]);
+
     updateDisplayValue(num);
     break;
 
   case RELEASED:
-    //freq1.stop();
-    //freq2.stop();
+    freq1.stop();
+    freq2.stop();
     break;
 
   case HOLD:
@@ -316,3 +277,4 @@ void displayRightDigit(int digit)
   char byte = byteForNumber(digit);
   shiftOut(SHIFT_DATA_PIN, SHIFT_CLOCK_PIN, MSBFIRST, byte);
 }
+//void lightUpDigit(int DisplayNumber);
